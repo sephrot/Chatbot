@@ -1,25 +1,29 @@
 import { useState } from "react";
+interface Message {
+  id: number;
+  text: string;
+  person: string;
+}
 function App() {
   const [inputValue, setInputValue] = useState("");
-  const [texts, setTexts] = useState<string[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [nextId, setNextId] = useState(1);
+  const addMessage = (text: string, person: string) => {
+    setMessages([...messages, { id: nextId, text, person }]);
+    setNextId(nextId + 1);
+  };
   return (
     <div className="App">
       <input
         type="text"
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            setTexts([...texts, inputValue]);
-            setInputValue("");
-          }
-        }}
       />
       <br></br>
       <button
         type="button"
         onClick={() => {
-          setTexts([...texts, inputValue]);
+          addMessage(inputValue, "user");
           setInputValue("");
         }}
       >
@@ -27,8 +31,10 @@ function App() {
       </button>
 
       <div>
-        {texts.map((text, i) => (
-          <p key={i}>{text}</p>
+        {messages.map((message, i) => (
+          <p key={i}>
+            {message.person}: says "{message.text}"
+          </p>
         ))}
       </div>
     </div>
